@@ -1,11 +1,19 @@
 const User = require('../models/User');
+const { hashPassword } = require('../security/security');
 
 const createUser = async (req, res) => {
+    const { name, email, password } = req.body;
+
     try {
-        const user = new User(req.body);
+        const user = new User();
+        user.name = name;
+        user.email = email;
+        user.password = hashPassword(password.toString());
+
         await user.save();
         res.status(201).send(user);
     } catch (error) {
+        console.log(error);
         res.status(400).send(error);
     }
 };
